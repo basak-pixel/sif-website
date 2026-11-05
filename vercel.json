@@ -1,0 +1,23 @@
+{
+  "outputDirectory": "public",
+  "cleanUrls": true,
+  "trailingSlash": true,
+  "redirects": [
+    {
+      "source": "/deal-flow",
+      "destination": "/portfolio/",
+      "permanent": true
+    },
+    {
+      "source": "/registration",
+      "destination": "/membership/#apply",
+      "permanent": true
+    },
+    {
+      "source": "/home",
+      "destination": "/",
+      "permanent": true
+    }
+  ],
+  "buildCommand": null
+}
