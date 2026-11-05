@@ -128,7 +128,7 @@ p { margin: 0; }
 /* ---------- Header ---------- */
 .site-header {
   position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20;
-  background: color-mix(in oklab, var(--sif-deep-navy) 92%, transparent);
+  background: var(--surface-inverse);
   -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
   color: var(--text-on-inverse);
 }
@@ -189,14 +189,25 @@ p { margin: 0; }
 /* ---------- Hero ---------- */
 .hero { position: relative; overflow: hidden; background: var(--surface-inverse); color: var(--text-on-inverse-muted); }
 .hero::before {
-  content: ""; position: absolute; inset: -96px; opacity: 0.5;
+  content: ""; position: absolute; inset: 0; opacity: 0.28;
   background-image: linear-gradient(var(--line-inverse) 1px, transparent 1px), linear-gradient(90deg, var(--line-inverse) 1px, transparent 1px);
   background-size: 96px 96px;
-  animation: sifDrift var(--duration-ambient) linear infinite;
-  -webkit-mask-image: linear-gradient(100deg, transparent 0%, transparent 38%, #000 70%);
-  mask-image: linear-gradient(100deg, transparent 0%, transparent 38%, #000 70%);
+  -webkit-mask-image: linear-gradient(100deg, transparent 0%, transparent 38%, #000 80%);
+  mask-image: linear-gradient(100deg, transparent 0%, transparent 38%, #000 80%);
 }
-@keyframes sifDrift { from { transform: translate3d(0, 0, 0); } to { transform: translate3d(96px, 96px, 0); } }
+.hero-net {
+  position: absolute; inset: 0; z-index: 0; pointer-events: none; display: block;
+  -webkit-mask-image: linear-gradient(100deg, transparent 18%, #000 62%);
+  mask-image: linear-gradient(100deg, transparent 18%, #000 62%);
+}
+@media (max-width: 760px) {
+  .hero-net {
+    opacity: 0.55;
+    -webkit-mask-image: linear-gradient(180deg, transparent 30%, #000 90%);
+    mask-image: linear-gradient(180deg, transparent 30%, #000 90%);
+  }
+}
+.hero .wrap { z-index: 1; }
 .hero .wrap { position: relative; padding-block: clamp(96px, 13vw, 160px) clamp(80px, 10vw, 128px); }
 .hero-inner { display: flex; flex-direction: column; gap: 36px; }
 .hero h1 { font-size: var(--text-hero); color: var(--text-on-inverse); max-width: 12ch; }
@@ -350,6 +361,135 @@ tbody tr:last-child > * { border-bottom: 0; }
 .skip { position: absolute; left: -9999px; top: 8px; z-index: 50; background: var(--sif-gold); color: var(--sif-deep-navy); padding: 10px 16px; border-radius: 8px; font-weight: 700; }
 .skip:focus { left: 16px; }
 
+/* =====================================================================
+   Motion. One signature moment (the hero network and headline sequence),
+   then quiet, scroll-linked reveals. Every element rests fully visible:
+   browsers without scroll timelines, and reduced-motion, simply show it.
+   ===================================================================== */
+
+/* Slower, more deliberate easing for luxury pacing */
+:root { --ease-lux: cubic-bezier(0.19, 1, 0.22, 1); }
+
+/* Headline lines sit in masks and rise into place */
+.hero h1 .ln { display: block; overflow: hidden; padding-bottom: 0.1em; margin-bottom: -0.1em; }
+.hero h1 .ln > span { display: block; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .hero .eyebrow { animation: eyebrowIn 1.6s var(--ease-lux) both 0.1s; }
+  .hero h1 .ln > span { animation: lineUp 1.3s var(--ease-lux) both; }
+  .hero h1 .ln:nth-child(1) > span { animation-delay: 0.22s; }
+  .hero h1 .ln:nth-child(2) > span { animation-delay: 0.36s; }
+  .hero h1 .ln:nth-child(3) > span { animation-delay: 0.5s; }
+  .hero h1:not(:has(.ln)) { animation: fadeUp 1.3s var(--ease-lux) both 0.25s; }
+  .hero .rule { transform-origin: left center; animation: drawRule 1.4s var(--ease-lux) both 0.75s; }
+  .hero .lead { animation: fadeUp 1.2s var(--ease-lux) both 0.9s; }
+  .hero .actions { animation: fadeUp 1.2s var(--ease-lux) both 1.05s; }
+  .hero-net { animation: netIn 3s ease-out both 0.2s; }
+}
+@keyframes eyebrowIn { from { opacity: 0; letter-spacing: 0.44em; } to { opacity: 1; letter-spacing: 0.16em; } }
+@keyframes lineUp { from { transform: translateY(108%); } to { transform: none; } }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+@keyframes drawRule { from { transform: scaleX(0); } to { transform: none; } }
+@keyframes netIn { from { opacity: 0; } }
+
+/* Primary button: a slow light sweeps across on hover */
+.btn--primary { position: relative; overflow: hidden; isolation: isolate; }
+.btn--primary::after {
+  content: ""; position: absolute; inset: -2px; z-index: -1; pointer-events: none;
+  background: linear-gradient(105deg, transparent 30%, color-mix(in oklab, white 55%, transparent) 50%, transparent 70%);
+  transform: translateX(-120%);
+}
+.btn--primary:hover::after { transform: translateX(120%); transition: transform 0.9s var(--ease-lux); }
+.btn svg { transition: transform var(--duration-fast) var(--ease-standard); }
+.btn:hover svg { transform: translateX(3px); }
+
+/* Card light: a soft gold glow and a gold edge follow the pointer (added by script) */
+.spot { position: relative; isolation: isolate; }
+.spot::before, .spot::after {
+  content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; z-index: -1;
+  opacity: 0; transition: opacity 0.5s var(--ease-standard);
+}
+.spot::after { background: radial-gradient(380px circle at var(--mx, 50%) var(--my, 50%), color-mix(in oklab, var(--sif-gold) 9%, transparent), transparent 65%); }
+.spot::before {
+  z-index: 0; padding: 1px;
+  background: radial-gradient(240px circle at var(--mx, 50%) var(--my, 50%), color-mix(in oklab, var(--sif-gold) 75%, transparent), transparent 70%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor; mask-composite: exclude;
+}
+.spot:hover::before, .spot:hover::after { opacity: 1; }
+.card { transition: transform 0.6s var(--ease-lux); }
+.card.spot:hover { transform: translateY(-3px); }
+
+/* Links in running text: a gold underline draws in */
+.prose a, .small a, .footer-top a { background: linear-gradient(var(--sif-gold), var(--sif-gold)) left bottom / 0 1px no-repeat; transition: background-size 0.5s var(--ease-lux), color var(--duration-fast); }
+.prose a:hover, .small a:hover, .footer-top a:hover { background-size: 100% 1px; }
+
+/* Scroll-linked motion, where the browser supports it */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .band .section-head, .capital, .steps > li, .band .card, .quote, .partners li, .event,
+    .people li, .table-wrap, .faq, .band .callout, .prose > p, .closing > *, .equation > span {
+      animation: reveal linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 70%;
+    }
+    @keyframes reveal { from { opacity: 0; transform: translateY(32px); } to { opacity: 1; transform: none; } }
+
+    /* Siblings arrive one after another */
+    :is(.capitals, .grid-2, .grid-3, .steps, .partners, .people) > :nth-child(2) { animation-range: entry 8% entry 78%; }
+    :is(.capitals, .grid-2, .grid-3, .steps, .partners, .people) > :nth-child(3) { animation-range: entry 16% entry 86%; }
+    :is(.capitals, .grid-2, .grid-3, .steps, .partners, .people) > :nth-child(4) { animation-range: entry 24% entry 94%; }
+    :is(.capitals, .grid-2, .grid-3, .steps, .partners, .people) > :nth-child(5) { animation-range: entry 32% cover 30%; }
+
+    /* The equation assembles word by word, the multiplication signs turn into place */
+    .equation > span { animation-name: wordUp; }
+    .equation > span:nth-child(2) { animation-range: entry 10% entry 80%; }
+    .equation > span:nth-child(3) { animation-range: entry 20% entry 90%; }
+    .equation > span:nth-child(4) { animation-range: entry 30% cover 25%; }
+    .equation > span:nth-child(5) { animation-range: entry 40% cover 30%; }
+    .equation > .op { animation-name: opTurn; }
+    @keyframes wordUp { from { opacity: 0; transform: translateY(0.45em); filter: blur(6px); } to { opacity: 1; transform: none; filter: none; } }
+    @keyframes opTurn { from { opacity: 0; transform: rotate(-90deg) scale(0.6); } to { opacity: 1; transform: none; } }
+
+    /* Gold rules and step lines draw in as they enter */
+    .band .rule { transform-origin: left center; animation: drawRule linear both; animation-timeline: view(); animation-range: entry 20% cover 35%; }
+    .steps > li { position: relative; }
+    .steps > li::after {
+      content: ""; position: absolute; top: -1px; left: 0; right: 0; height: 1px; background: var(--sif-gold);
+      transform-origin: left center; animation: drawRule linear both; animation-timeline: view(); animation-range: entry 40% cover 40%;
+    }
+    .event, .people li { position: relative; }
+
+    /* Large quote: a gentle focus pull */
+    .quote--lg blockquote { animation: focusIn linear both; animation-timeline: view(); animation-range: entry 0% cover 40%; }
+    @keyframes focusIn { from { opacity: 0.15; filter: blur(8px); letter-spacing: 0.02em; } to { opacity: 1; filter: none; letter-spacing: 0; } }
+  }
+}
+
+/* Header settles as the page scrolls, with a fine gold progress line */
+@supports (animation-timeline: scroll()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .site-header { animation: headerVeil linear both; animation-timeline: scroll(root); animation-range: 0 220px; }
+    @keyframes headerVeil { from { background: var(--surface-inverse); } to { background: color-mix(in oklab, var(--sif-deep-navy) 88%, transparent); } }
+    .site-header .wrap { animation: headerPad linear both; animation-timeline: scroll(root); animation-range: 0 220px; }
+    @keyframes headerPad { from { padding-block: 26px; } to { padding-block: 14px; } }
+    .site-header::after {
+      content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1px; background: var(--sif-gold);
+      transform-origin: left center; transform: scaleX(0);
+      animation: drawRule linear both; animation-timeline: scroll(root);
+    }
+  }
+}
+
+/* Smooth cross-fade between pages; the header stays put */
+@view-transition { navigation: auto; }
+.site-header { view-transition-name: site-header; }
+::view-transition-old(root) { animation: 0.35s var(--ease-standard) both vtOut; }
+::view-transition-new(root) { animation: 0.6s var(--ease-lux) both vtIn; }
+@keyframes vtOut { to { opacity: 0; } }
+@keyframes vtIn { from { opacity: 0; transform: translateY(12px); } }
+
 @media (prefers-reduced-motion: reduce) {
+  @view-transition { navigation: none; }
   *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
 }
