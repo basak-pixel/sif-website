@@ -1,0 +1,13 @@
+# Backup refresh: rebuilds the site every hour so the community page follows Notion
+# even if the Notion automation webhook is off. Needs the VERCEL_DEPLOY_HOOK secret.
+name: Refresh members from Notion
+on:
+  schedule:
+    - cron: "17 * * * *"
+  workflow_dispatch:
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger a Vercel rebuild
+        run: curl -fsS -X POST "${{ secrets.VERCEL_DEPLOY_HOOK }}"

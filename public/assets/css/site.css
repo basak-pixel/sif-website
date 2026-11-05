@@ -493,3 +493,53 @@ tbody tr:last-child > * { border-bottom: 0; }
   @view-transition { navigation: none; }
   *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
 }
+
+/* ---------- Member cards (community page, generated from Notion) ---------- */
+.members { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(168px, 1fr)); gap: 40px var(--gutter); }
+.members > li { min-width: 0; }
+.member-link { position: relative; display: flex; flex-direction: column; gap: 4px; text-decoration: none; color: inherit; border-radius: 14px; }
+.portrait {
+  position: relative; display: grid; place-items: center; aspect-ratio: 4 / 5; max-width: 100%;
+  margin-bottom: 12px; border-radius: 14px; overflow: hidden;
+  background:
+    linear-gradient(color-mix(in oklab, var(--sif-deep-navy) 5%, transparent) 1px, transparent 1px) 0 0 / 24px 24px,
+    linear-gradient(90deg, color-mix(in oklab, var(--sif-deep-navy) 5%, transparent) 1px, transparent 1px) 0 0 / 24px 24px,
+    var(--surface-card);
+}
+.portrait img {
+  width: 100%; height: 100%; object-fit: cover; display: block;
+  filter: grayscale(1) contrast(1.04); transform: scale(1.01);
+  transition: filter 0.9s var(--ease-lux), transform 1.2s var(--ease-lux);
+}
+.portrait::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: var(--sif-gold);
+  transform: scaleX(0); transform-origin: left center; transition: transform 0.7s var(--ease-lux);
+}
+.initials {
+  font-family: var(--font-display); font-weight: 600; font-size: clamp(2rem, 3.4vw, 2.75rem);
+  letter-spacing: -0.02em; color: var(--text-muted); transition: color 0.6s var(--ease-lux);
+}
+.member-name { font-family: var(--font-display); font-weight: 600; font-size: 1.125rem; letter-spacing: -0.015em; line-height: 1.2; color: var(--text-strong); }
+.member-title, .member-company { font-size: var(--text-body-sm); line-height: 1.45; }
+.member-title { color: var(--text-body); }
+.member-company { color: var(--text-muted); }
+.member-out {
+  position: absolute; top: 12px; right: 12px; width: 32px; height: 32px; display: grid; place-items: center;
+  border-radius: 999px; background: color-mix(in oklab, var(--sif-deep-navy) 72%, transparent); color: var(--sif-warm-white);
+  opacity: 0; transform: translateY(4px); transition: opacity 0.4s var(--ease-standard), transform 0.5s var(--ease-lux);
+}
+.member-out svg { width: 14px; height: 14px; }
+a.member-link:hover .portrait img, a.member-link:focus-visible .portrait img { filter: none; transform: scale(1.05); }
+.member-link:hover .portrait::after, .member-link:focus-visible .portrait::after { transform: scaleX(1); }
+.member-link:hover .initials { color: var(--text-strong); }
+a.member-link:hover .member-out, a.member-link:focus-visible .member-out { opacity: 1; transform: none; }
+@media (hover: none) { .portrait img { filter: none; } }
+@media (max-width: 480px) { .members { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px 16px; } }
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .members > li { animation: reveal linear both; animation-timeline: view(); animation-range: entry 0% entry 60%; }
+    .members > li:nth-child(4n+2) { animation-range: entry 6% entry 66%; }
+    .members > li:nth-child(4n+3) { animation-range: entry 12% entry 72%; }
+    .members > li:nth-child(4n+4) { animation-range: entry 18% entry 78%; }
+  }
+}

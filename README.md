@@ -19,6 +19,29 @@ The new site keeps the WordPress addresses (`/about-us/`, `/membership/`, `/foun
 `/club-membership/`, `/portfolio/`, `/events/`, `/community/`), so existing links keep working.
 `vercel.json` forwards the few retired ones: `/deal-flow/` and `/registration/`.
 
+## Members from Notion
+
+The community page is built from the Notion database **SIF Members**. A person appears when both are true:
+
+- **Website: Show** (checkbox) is ticked. This records that they agreed to be listed.
+- **Conversion Status** is a member stage: Reserved, Collection, Payment in Progress, Paid, or Renewal Fee Due.
+
+Moving someone up the funnel adds them; moving them to Park, Not a Fit or Closed removes them.
+The card shows Name, the first role in Unvan, the first company in Şirket, LinkedIn, and the photo in
+**Website Photo** (a files property). Optional **Website Title** / **Website Company** override the card text.
+
+How it updates:
+
+1. `scripts/sync_notion.py` runs at the start of every Vercel build. It reads Notion with the
+   `NOTION_TOKEN` environment variable (a Notion internal integration with read access to SIF Members),
+   writes `src/data/members.json` and downloads photos. Without the token it keeps the last list.
+2. Instant: a Notion database automation on SIF Members, "When Conversion Status or Website: Show changes →
+   Send webhook", pointed at a Vercel Deploy Hook URL. The page updates in about a minute.
+3. Backup: `.github/workflows/refresh-members.yml` calls the same Deploy Hook every hour
+   (store it as the `VERCEL_DEPLOY_HOOK` repository secret).
+
+The Notion token and the Deploy Hook URL are secrets: keep them in Vercel and GitHub settings, never in the code.
+
 ## Copy rules
 
 Investor-facing copy follows SIF's Terms & Conditions and the UK financial promotion rules

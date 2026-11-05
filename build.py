@@ -10,6 +10,7 @@ Inside pages, write links as {{link:about-us}} or {{link:}} for home, and the sh
 contact address as {{email}}. Everything else is plain HTML.
 """
 import html
+import json
 import re
 import shutil
 import sys
@@ -71,7 +72,43 @@ def mailto(subject):
     return f"mailto:{EMAIL}?subject={quote(subject)}"
 
 
+def initials(name):
+    parts = [p for p in name.replace("-", " ").split() if p]
+    return (parts[0][0] + (parts[-1][0] if len(parts) > 1 else "")).upper()
+
+
+def members_grid(page_path):
+    """Member cards for the community page, from src/data/members.json (kept in sync with Notion)."""
+    data = SRC / "data/members.json"
+    members = json.loads(data.read_text()) if data.exists() else []
+    cards = []
+    for m in members:
+        name = html.escape(m["name"])
+        if m.get("photo"):
+            src = m["photo"] if PREVIEW is False else "../" * depth(page_path) + m["photo"]
+            src = "/" + src if not PREVIEW else src
+            portrait = (f'<img src="{html.escape(src)}" alt="" width="480" height="600" '
+                        f'loading="lazy" decoding="async">')
+        else:
+            portrait = f'<span class="initials" aria-hidden="true">{html.escape(initials(m["name"]))}</span>'
+        role = "".join(
+            f'<span class="{cls}">{html.escape(m[key])}</span>'
+            for key, cls in (("title", "member-title"), ("company", "member-company")) if m.get(key))
+        inner = (f'<span class="portrait">{portrait}</span>'
+                 f'<span class="member-name">{name}</span>{role}')
+        if m.get("linkedin"):
+            inner = (f'<a class="member-link" href="{html.escape(m["linkedin"])}" rel="noopener" '
+                     f'aria-label="{name} on LinkedIn">{inner}<span class="member-out">{ARROW_UP_RIGHT}</span></a>')
+        else:
+            inner = f'<div class="member-link">{inner}</div>'
+        cards.append(f"<li>{inner}</li>")
+    return len(members), '<ul class="members">' + "".join(cards) + "</ul>"
+
+
 def render(template, page_path):
+    if "{{members}}" in template:
+        count, grid = members_grid(page_path)
+        template = template.replace("{{members}}", grid).replace("{{member_count}}", str(count))
     template = re.sub(r"\{\{link:([^}]*)\}\}", lambda m: link(m.group(1), page_path), template)
     template = re.sub(r"\{\{mailto:([^}]*)\}\}", lambda m: mailto(m.group(1)), template)
     template = template.replace("{{email}}", EMAIL)
@@ -203,8 +240,10 @@ def main():
     css = (SRC / "assets/css/site.css").read_text()
     js = (SRC / "assets/js/site.js").read_text()
     built = [build_page(f, css, js) for f in sorted((SRC / "pages").glob("*.html"))]
+    if PREVIEW and (SRC / "assets/members").exists():
+        shutil.copytree(SRC / "assets/members", OUT / "assets/members")
     if not PREVIEW:
-        shutil.copytree(SRC / "assets", OUT / "assets")
+        shutil.copytree(SRC / "assets", OUT / "assets", ignore=shutil.ignore_patterns("*.src"))
         mono = (SRC / "assets/brand/monogram-source.svg").read_text().split("?>", 1)[-1]
         mono = mono.replace('fill="#000000"', 'fill="#0e162c"')
         (OUT / "assets/brand/favicon.svg").write_text(mono)
