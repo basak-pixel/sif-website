@@ -1,6 +1,6 @@
 # Backup refresh: rebuilds the site every hour so the community page follows Notion
 # even if the Notion automation webhook is off. Needs the VERCEL_DEPLOY_HOOK secret.
-name: Refresh members from Notion
+name: Refresh the site from Notion
 on:
   schedule:
     - cron: "17 * * * *"

@@ -4,11 +4,20 @@
     python3 build.py            -> public/   (the real site, root-absolute links)
     python3 build.py --preview  -> preview/  (self-contained copy for a private review link)
 
-Each page lives in src/pages/<name>.html. Its first line is a comment with the page's
-settings:  <!-- path: about-us | title: About | description: ... -->
-Inside pages, write links as {{link:about-us}} or {{link:}} for home, and the shared
-contact address as {{email}}. Everything else is plain HTML.
+Layout lives in src/pages/<name>.html; all words live in src/data/content.json, which
+scripts/sync_notion.py fills from the Notion page "SIF Website" (SIF Home > SIF Website).
+
+Page templates use these slots:
+  {{t:key}}           a text from Site Copy (escaped)
+  {{lines:key}}       a headline, one line per line break in Notion
+  {{link:about-us}}   a link to a page ({{link:}} for home, {{link:membership#apply}} for an anchor)
+  {{mailto:Subject}}  an email link to the contact address with a subject
+  {{email}}           the contact address
+  {{members}} {{testimonials}} {{partners}} {{leadership}} {{events_upcoming}} {{events_past}}
+                      sections generated from their Notion tables
+The first line of each page is a comment with its path: <!-- path: about-us | ... -->
 """
+import datetime
 import html
 import json
 import re
@@ -22,8 +31,13 @@ PREVIEW = "--preview" in sys.argv
 OUT = ROOT / ("preview" if PREVIEW else "public")
 
 SITE_URL = "https://sifventures.com"
-EMAIL = "team@sifventures.com"
-LOGIN_URL = "/login/"  # decide where member login points once WordPress is retired
+CONTENT = json.loads((SRC / "data/content.json").read_text())
+COPY = CONTENT.get("copy", {})
+SETTINGS = CONTENT.get("settings", {})
+EMAIL = SETTINGS.get("contact_email", "team@sifventures.com")
+LOGIN_URL = SETTINGS.get("login_url", "/login/")
+LINKEDIN_URL = SETTINGS.get("linkedin_url", "https://www.linkedin.com/company/smartinvestmentforum")
+MISSING = set()
 
 NAV = [
     ("about-us", "About"),
@@ -78,9 +92,8 @@ def initials(name):
 
 
 def members_grid(page_path):
-    """Member cards for the community page, from src/data/members.json (kept in sync with Notion)."""
-    data = SRC / "data/members.json"
-    members = json.loads(data.read_text()) if data.exists() else []
+    """Member cards for the community page (SIF Members in Notion)."""
+    members = CONTENT.get("members", [])
     cards = []
     for m in members:
         name = html.escape(m["name"])
@@ -105,15 +118,96 @@ def members_grid(page_path):
     return len(members), '<ul class="members">' + "".join(cards) + "</ul>"
 
 
+def copy(key):
+    if key not in COPY:
+        MISSING.add(key)
+    return COPY.get(key, "").replace("{count}", str(len(CONTENT.get("members", []))))
+
+
+def headline_lines(key):
+    lines = [l.strip() for l in copy(key).split("\n") if l.strip()]
+    return "".join(f'<span class="ln"><span>{html.escape(l)}</span></span>' for l in lines)
+
+
+def by_order(items):
+    return sorted(items, key=lambda i: (i.get("order") is None, i.get("order") or 0, i.get("name", "")))
+
+
+def testimonials():
+    items = by_order(CONTENT.get("testimonials", []))
+    if not items:
+        return ""
+    featured = next((t for t in items if t.get("featured")), items[0])
+    rest = [t for t in items if t is not featured]
+
+    def fig(t, cls):
+        role = f'<span>{html.escape(t["role"])}</span>' if t.get("role") else ""
+        return (f'<figure class="{cls}"><blockquote>\u201c{html.escape(t["quote"].strip("\u201c\u201d\""))}\u201d</blockquote>'
+                f'<figcaption><strong>{html.escape(t["name"])}</strong>{role}</figcaption></figure>')
+    out = fig(featured, "quote quote--lg").replace('class="quote quote--lg"', 'class="quote quote--lg" style="max-width:30ch"')
+    if rest:
+        out += '<div class="grid-2">' + "".join(fig(t, "quote card") for t in rest) + "</div>"
+    return out
+
+
+def partners():
+    items = by_order(CONTENT.get("partners", []))
+    lis = "".join(
+        f'<li><a href="{html.escape(p["link"])}" rel="noopener">{html.escape(p["name"])} {ARROW_UP_RIGHT}</a></li>'
+        if p.get("link") else f'<li><a>{html.escape(p["name"])}</a></li>' for p in items)
+    return f'<ul class="partners">{lis}</ul>'
+
+
+def leadership():
+    items = by_order(CONTENT.get("leadership", []))
+    lis = "".join(f'<li><span class="name">{html.escape(p["name"])}</span>'
+                  f'<span class="role">{html.escape(p.get("role", ""))}</span></li>' for p in items)
+    return f'<ul class="people">{lis}</ul>'
+
+
+def events(upcoming):
+    today = datetime.date.today().isoformat()
+    items = [e for e in CONTENT.get("events", []) if e.get("date")]
+    items = [e for e in items if (e["date"] >= today) == upcoming]
+    items.sort(key=lambda e: e["date"], reverse=not upcoming)
+    if not upcoming:
+        items = items[:6]
+    if not items:
+        return f'<p class="lead">{html.escape(copy("events.upcoming.empty"))}</p>' if upcoming else ""
+    out = []
+    for e in items:
+        d = datetime.date.fromisoformat(e["date"])
+        small = f'{d.year}, {e["time"]}' if e.get("time") and upcoming else str(d.year)
+        when = f'<p class="when">{d.day} {d.strftime("%b")}<small>{html.escape(small)}</small></p>'
+        body = (f'<div class="stack" style="gap:8px"><h3>{html.escape(e["name"])}</h3>'
+                + (f'<p class="meta">{html.escape(e["location"])}</p>' if e.get("location") else "")
+                + (f'<p>{html.escape(e["description"])}</p>' if e.get("description") else "") + "</div>")
+        if upcoming:
+            action = (f'<a class="btn btn--tonal" href="{{{{mailto:{e["name"]} RSVP}}}}">RSVP</a>'
+                      if e.get("rsvp") else "<span></span>")
+        else:
+            action = '<span class="badge badge--quiet">Held</span>'
+        out.append(f'<article class="event">{when}{body}{action}</article>')
+    return "<div>" + "".join(out) + "</div>"
+
+
 def render(template, page_path):
     if "{{members}}" in template:
         count, grid = members_grid(page_path)
-        template = template.replace("{{members}}", grid).replace("{{member_count}}", str(count))
+        template = template.replace("{{members}}", grid)
+    template = (template.replace("{{testimonials}}", testimonials() if "{{testimonials}}" in template else "")
+                .replace("{{partners}}", partners() if "{{partners}}" in template else "")
+                .replace("{{leadership}}", leadership() if "{{leadership}}" in template else "")
+                .replace("{{events_upcoming}}", events(True) if "{{events_upcoming}}" in template else "")
+                .replace("{{events_past}}", events(False) if "{{events_past}}" in template else ""))
+    template = re.sub(r"\{\{lines:([^}]+)\}\}", lambda m: headline_lines(m.group(1)), template)
+    template = re.sub(r"\{\{t:([^}]+)\}\}", lambda m: html.escape(copy(m.group(1)), quote=False), template)
     template = re.sub(r"\{\{link:([^}]*)\}\}", lambda m: link(m.group(1), page_path), template)
     template = re.sub(r"\{\{mailto:([^}]*)\}\}", lambda m: mailto(m.group(1)), template)
     template = template.replace("{{email}}", EMAIL)
     template = template.replace("{{arrow}}", ARROW).replace("{{arrow-out}}", ARROW_UP_RIGHT)
     template = template.replace("{{login}}", LOGIN_URL if not PREVIEW else link("membership", page_path))
+    template = template.replace("{{linkedin}}", LINKEDIN_URL)
     return template
 
 
@@ -130,10 +224,10 @@ def header(page_path):
   <div class="wrap">
     <a class="brand" href="{{{{link:}}}}">{wordmark()}</a>
     <nav class="nav" aria-label="Main">{nav}</nav>
-    <a class="btn btn--primary header-cta" href="{{{{link:membership#apply}}}}">Request an invitation</a>
+    <a class="btn btn--primary header-cta" href="{{{{link:membership#apply}}}}">{{{{t:global.header.cta}}}}</a>
     <details class="menu">
       <summary>Menu</summary>
-      <nav class="menu-panel" aria-label="Main">{nav}<a class="btn btn--primary" href="{{{{link:membership#apply}}}}">Request an invitation</a></nav>
+      <nav class="menu-panel" aria-label="Main">{nav}<a class="btn btn--primary" href="{{{{link:membership#apply}}}}">{{{{t:global.header.cta}}}}</a></nav>
     </details>
   </div>
 </header>"""
@@ -145,7 +239,7 @@ FOOTER = """
     <div class="footer-top">
       <div>
         <a class="brand" href="{{link:}}">%(logo)s</a>
-        <p style="max-width:34ch">A referral-only network compounding social, intellectual and financial capital. United Kingdom, Türkiye and Bulgaria.</p>
+        <p style="max-width:34ch">{{t:global.footer.blurb}}</p>
       </div>
       <div>
         <p class="eyebrow">Navigate</p>
@@ -164,7 +258,7 @@ FOOTER = """
       <div>
         <p class="eyebrow">Contact</p>
         <a href="mailto:{{email}}">{{email}}</a>
-        <a href="https://www.linkedin.com/company/smartinvestmentforum" rel="noopener">LinkedIn</a>
+        <a href="{{linkedin}}" rel="noopener">LinkedIn</a>
         <span>UK · TR · BG</span>
       </div>
     </div>
@@ -190,11 +284,12 @@ def build_page(src_file, css, js):
     meta = dict(part.split(":", 1) for part in meta_line.strip()[4:-3].split(" | "))
     meta = {k.strip(): v.strip() for k, v in meta.items()}
     path = meta["path"]
-    title = meta["title"]
-    full_title = "SIF Ventures" if title == "SIF Ventures" else f"{title} | SIF Ventures"
+    pkey = path or "home"
+    title = copy(f"{pkey}.meta.title") or meta.get("title", "SIF Ventures")
+    full_title = title if "SIF Ventures" in title else f"{title} | SIF Ventures"
     if PREVIEW and path == "":
         full_title = "SIF Ventures Website"
-    desc = html.escape(meta["description"], quote=True)
+    desc = html.escape(copy(f"{pkey}.meta.description") or meta.get("description", ""), quote=True)
     canonical = SITE_URL + ("/" if path == "" else f"/{path}/")
 
     fonts = ('<link rel="preconnect" href="https://fonts.googleapis.com">'
@@ -253,8 +348,11 @@ def main():
             for p in built)
         (OUT / "sitemap.xml").write_text(
             f'<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">{urls}</urlset>\n')
+        (OUT / "content.json").write_text(json.dumps(CONTENT, ensure_ascii=False))  # read back by the next sync
     for p in built:
         print("built", p.relative_to(ROOT))
+    if MISSING:
+        print("missing texts (add these keys in Site Copy):", ", ".join(sorted(MISSING)))
 
 
 if __name__ == "__main__":

@@ -3,14 +3,35 @@
 The SIF Ventures website, built from the SIF Ventures Design System (colors, type, logos and voice).
 Plain HTML and CSS, no WordPress, no framework.
 
-## Editing
+## Editing content: Notion
 
-- Page content: `src/pages/<page>.html`. The first line of each file holds its address, title and search description.
-- Shared header and footer, including the legal disclaimer: `build.py`.
+All words on the site live in Notion, on the page **SIF Home > SIF Website**:
+
+| Table | What it holds |
+|---|---|
+| Site Copy | Every headline, paragraph, button and question, one row each (edit **Text**) |
+| Events | Name, date, time, location, description, RSVP button. Upcoming and Recent are split by date |
+| Testimonials | Home page quotes. **Featured** picks the large one |
+| Partners, Leadership | Home page partners, About page team |
+| Settings | Contact email, member login link, LinkedIn |
+| Members on the site | A view of **SIF Members** |
+
+Rules: Site Copy rows publish only when **Status = Live** (Editing keeps the current text).
+Every publish runs a compliance check; a row with return figures, IRR, guarantees, valuations,
+minimum tickets or inducements to invest is not published and is marked **Check = Blocked** with
+the reason. The footer's legal disclaimer stays in `build.py` on purpose.
+
+`scripts/sync_notion.py` reads Notion into `src/data/content.json` at the start of every build.
+`src/data/content.json` in the repository is the last synced copy, so the site still builds
+without Notion access.
+
+## Editing layout and code
+
+- Page layout: `src/pages/<page>.html`, with `{{t:key}}` slots for Site Copy texts.
+- Header, footer and section builders: `build.py`.
 - Styles: `src/assets/css/site.css`. Brand colors and type are at the top.
-- Links between pages are written `{{link:membership}}` so they work on any host.
 
-Run `python3 build.py` to produce the site in `public/`, and commit `public/` with your change: the host serves it as is.
+Run `python3 build.py` to produce the site in `public/`.
 `python3 build.py --preview` produces a self-contained copy for a private review link.
 
 ## Page addresses
@@ -21,26 +42,25 @@ The new site keeps the WordPress addresses (`/about-us/`, `/membership/`, `/foun
 
 ## Members from Notion
 
-The community page is built from the Notion database **SIF Members**. A person appears when both are true:
+The community page lists people from **SIF Members** when **Website: Show** (checkbox) is ticked
+and **Conversion Status** is Reserved, Collection, Payment in Progress, Paid or Renewal Fee Due.
+Cards show Name, the first role in Unvan, the first company in Şirket, LinkedIn, and the photo in
+**Website Photo** (files). Optional **Website Title** / **Website Company** override the card text.
+Until the Website: Show checkbox exists, the sync keeps the current list.
 
-- **Website: Show** (checkbox) is ticked. This records that they agreed to be listed.
-- **Conversion Status** is a member stage: Reserved, Collection, Payment in Progress, Paid, or Renewal Fee Due.
+## How updates go live
 
-Moving someone up the funnel adds them; moving them to Park, Not a Fit or Closed removes them.
-The card shows Name, the first role in Unvan, the first company in Şirket, LinkedIn, and the photo in
-**Website Photo** (a files property). Optional **Website Title** / **Website Company** override the card text.
+1. Vercel runs `scripts/sync_notion.py` then `build.py` on every deploy. It needs `NOTION_TOKEN`:
+   a Notion internal integration shared with SIF Website and SIF Members (read, plus update for
+   the Check columns).
+2. **Publish button:** on the SIF Website page, a Notion button with the action "Send webhook"
+   to a Vercel Deploy Hook URL. The site updates in about a minute.
+3. **Members:** a Notion automation on SIF Members, "When Conversion Status or Website: Show
+   changes, send webhook", to the same Deploy Hook.
+4. **Backup:** `.github/workflows/refresh-members.yml` calls the Deploy Hook every hour
+   (repository secret `VERCEL_DEPLOY_HOOK`). It also rolls finished events into Recent.
 
-How it updates:
-
-1. `scripts/sync_notion.py` runs at the start of every Vercel build. It reads Notion with the
-   `NOTION_TOKEN` environment variable (a Notion internal integration with read access to SIF Members),
-   writes `src/data/members.json` and downloads photos. Without the token it keeps the last list.
-2. Instant: a Notion database automation on SIF Members, "When Conversion Status or Website: Show changes →
-   Send webhook", pointed at a Vercel Deploy Hook URL. The page updates in about a minute.
-3. Backup: `.github/workflows/refresh-members.yml` calls the same Deploy Hook every hour
-   (store it as the `VERCEL_DEPLOY_HOOK` repository secret).
-
-The Notion token and the Deploy Hook URL are secrets: keep them in Vercel and GitHub settings, never in the code.
+The Notion token and the Deploy Hook URL are secrets: keep them in Vercel and GitHub settings.
 
 ## Copy rules
 

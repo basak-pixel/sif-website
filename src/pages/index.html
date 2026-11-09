@@ -1,134 +1,106 @@
 <!-- path:  | title: SIF Ventures | description: SIF Ventures is a referral-only network of investors, builders, domain experts and strategic allies across the UK, Türkiye and Bulgaria. -->
 <section class="hero">
-  <div class="wrap">
-    <div class="hero-inner">
-      <p class="eyebrow">Networked capital architecture</p>
-      <h1><span class="ln"><span>The structure</span></span><span class="ln"><span>is the edge.</span></span></h1>
-      <hr class="rule">
-      <p class="lead">A referral-only network of investors, builders, domain experts and strategic allies. We bring opportunities to members, and domain experts review each one before members see it.</p>
-      <div class="actions">
-        <a class="btn btn--primary btn--lg" href="{{link:membership}}">Explore membership {{arrow}}</a>
-        <a class="btn btn--quiet btn--lg" href="{{link:about-us}}">How SIF works</a>
-      </div>
-    </div>
+<div class="wrap">
+<div class="hero-inner">
+<p class="eyebrow">{{t:home.hero.label-1}}</p>
+<h1>{{lines:home.hero.headline}}</h1>
+<hr class="rule"/>
+<p class="lead">{{t:home.hero.intro-1}}</p>
+<div class="actions">
+<a class="btn btn--primary btn--lg" href="{{link:membership}}">{{t:home.hero.button-1}} {{arrow}}</a>
+<a class="btn btn--quiet btn--lg" href="{{link:about-us}}">{{t:home.hero.button-2}}</a>
+</div>
+</div>
+</div>
+</section>
+<section aria-labelledby="capitals-title" class="band band--light">
+<div class="wrap stack" style="gap:56px">
+<div class="section-head">
+<p class="eyebrow">{{t:home.the-system.label-1}}</p>
+<h2 class="sr-only" id="capitals-title">{{t:home.the-system.heading-1}}</h2>
+<p aria-label="Social times intellectual times financial" class="equation"><span>{{t:home.the-system.text-1}}</span><span class="op">{{t:home.the-system.text-2}}</span><span>{{t:home.the-system.text-3}}</span><span class="op">{{t:home.the-system.text-4}}</span><span>{{t:home.the-system.text-5}}</span></p>
+<p class="lead">{{t:home.the-system.intro-1}}</p>
+</div>
+<div class="capitals">
+<div class="capital">
+<h3>{{t:home.the-system.title-1}}</h3>
+<p>{{t:home.the-system.text-6}}</p>
+</div>
+<div class="capital">
+<h3>{{t:home.the-system.title-2}}</h3>
+<p>{{t:home.the-system.text-7}}</p>
+</div>
+<div class="capital">
+<h3>{{t:home.the-system.title-3}}</h3>
+<p>{{t:home.the-system.text-8}}</p>
+</div>
+</div>
+</div>
+</section>
+<section aria-labelledby="how-title" class="band band--navy">
+<div class="wrap stack" style="gap:56px">
+<div class="section-head">
+<p class="eyebrow">{{t:home.how-it-works.label-1}}</p>
+<h2 id="how-title">{{t:home.how-it-works.heading-1}}</h2>
+<p class="lead">{{t:home.how-it-works.intro-1}}</p>
+</div>
+<ol class="steps" style="--cols:5">
+<li><h3>{{t:home.how-it-works.title-1}}</h3><p>{{t:home.how-it-works.text-1}}</p></li>
+<li><h3>{{t:home.how-it-works.title-2}}</h3><p>{{t:home.how-it-works.text-2}}</p></li>
+<li><h3>{{t:home.how-it-works.title-3}}</h3><p>{{t:home.how-it-works.text-3}}</p></li>
+<li><h3>{{t:home.how-it-works.title-4}}</h3><p>{{t:home.how-it-works.text-4}}</p></li>
+<li><h3>{{t:home.how-it-works.title-5}}</h3><p>{{t:home.how-it-works.text-5}}</p></li>
+</ol>
+</div>
+</section>
+<section aria-labelledby="focus-title" class="band band--white">
+<div class="wrap split">
+<div class="section-head">
+<p class="eyebrow">{{t:home.focus.label-1}}</p>
+<h2 id="focus-title">{{t:home.focus.heading-1}}</h2>
+<hr class="rule"/>
+</div>
+<div class="stack" style="gap:0">
+<div class="capital" style="padding-block:20px 28px">
+<h3>{{t:home.focus.title-1}}</h3>
+<p>{{t:home.focus.text-1}}</p>
+</div>
+<div class="capital" style="padding-block:20px 28px">
+<h3>{{t:home.focus.title-2}}</h3>
+<p>{{t:home.focus.text-2}}</p>
+</div>
+<div class="capital" style="padding-block:20px 0">
+<h3>{{t:home.focus.title-3}}</h3>
+<p>{{t:home.focus.text-3}}</p>
+</div>
+</div>
+</div>
+</section>
+<section aria-labelledby="voices-title" class="band band--light">
+<div class="wrap stack" style="gap:56px">
+<div class="section-head">
+<p class="eyebrow">{{t:home.members.label-1}}</p>
+<h2 id="voices-title">{{t:home.members.heading-1}}</h2>
+</div>
+    {{testimonials}}
   </div>
 </section>
-
-<section class="band band--light" aria-labelledby="capitals-title">
-  <div class="wrap stack" style="gap:56px">
-    <div class="section-head">
-      <p class="eyebrow">The system</p>
-      <h2 id="capitals-title" class="sr-only">Three forms of capital</h2>
-      <p class="equation" aria-label="Social times intellectual times financial"><span>Social</span><span class="op">×</span><span>Intellectual</span><span class="op">×</span><span>Financial</span></p>
-      <p class="lead">Most networks hold one form of capital and hope the others follow. SIF compounds all three inside one structure.</p>
-    </div>
-    <div class="capitals">
-      <div class="capital">
-        <h3>Social capital</h3>
-        <p>Named introductions and verified relationships. Every member enters through someone who vouches for them.</p>
-      </div>
-      <div class="capital">
-        <h3>Intellectual capital</h3>
-        <p>Domain Expert Councils turn scattered knowledge into reviews that hold up under scrutiny.</p>
-      </div>
-      <div class="capital">
-        <h3>Financial capital</h3>
-        <p>Members who invest decide for themselves, with expert analysis in hand and the network behind it.</p>
-      </div>
-    </div>
+<section aria-labelledby="partners-title" class="band band--white band--tight">
+<div class="wrap stack" style="gap:40px">
+<div class="section-head">
+<p class="eyebrow">{{t:home.network-partners.label-1}}</p>
+<h2 id="partners-title">{{t:home.network-partners.heading-1}}</h2>
+</div>
+    {{partners}}
   </div>
 </section>
-
-<section class="band band--navy" aria-labelledby="how-title">
-  <div class="wrap stack" style="gap:56px">
-    <div class="section-head">
-      <p class="eyebrow">How it works</p>
-      <h2 id="how-title">From introduction to decision.</h2>
-      <p class="lead">Every opportunity follows the same route. Nothing reaches members without a named source and an expert review.</p>
-    </div>
-    <ol class="steps" style="--cols:5">
-      <li><h3>Member-led sourcing</h3><p>Opportunities come from members who know the company and stand behind the introduction.</p></li>
-      <li><h3>Expert review</h3><p>A Domain Expert Council examines the market, the technology and the team.</p></li>
-      <li><h3>Member briefing</h3><p>Reviewed opportunities are shared with certified members inside the private group.</p></li>
-      <li><h3>Individual decision</h3><p>Each member decides independently. SIF is the intermediary, not the investor.</p></li>
-      <li><h3>Recognised contribution</h3><p>Members who source opportunities and make introductions are recognised under the membership terms.</p></li>
-    </ol>
-  </div>
-</section>
-
-<section class="band band--white" aria-labelledby="focus-title">
-  <div class="wrap split">
-    <div class="section-head">
-      <p class="eyebrow">Focus</p>
-      <h2 id="focus-title">Three areas of alternative investment.</h2>
-      <hr class="rule">
-    </div>
-    <div class="stack" style="gap:0">
-      <div class="capital" style="padding-block:20px 28px">
-        <h3>Real world assets</h3>
-        <p>Real estate and other tangible assets, reviewed by members who work in those markets.</p>
-      </div>
-      <div class="capital" style="padding-block:20px 28px">
-        <h3>Secondaries and growth</h3>
-        <p>Later-stage and pre-IPO companies, often reached through members' own relationships.</p>
-      </div>
-      <div class="capital" style="padding-block:20px 0">
-        <h3>Tech ventures</h3>
-        <p>Early-stage companies and spin-offs, assessed by the experts closest to the technology.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="band band--light" aria-labelledby="voices-title">
-  <div class="wrap stack" style="gap:56px">
-    <div class="section-head">
-      <p class="eyebrow">Members</p>
-      <h2 id="voices-title">In their words.</h2>
-    </div>
-    <figure class="quote quote--lg" style="max-width:30ch">
-      <blockquote>“What impressed me most about SIF is the spirit of co-creation.”</blockquote>
-      <figcaption><strong>Demirhan Şener</strong><span>Founder and Strategic Advisor, Digital Spark</span></figcaption>
-    </figure>
-    <div class="grid-2">
-      <figure class="quote card">
-        <blockquote>“For me, the real differentiator isn’t capital. It’s people, insights, and conviction.”</blockquote>
-        <figcaption><strong>Begim Başlıgil</strong><span>Co-founder, Bulutistan</span></figcaption>
-      </figure>
-      <figure class="quote card">
-        <blockquote>“At SIF Ventures, investing isn’t about walls or gatekeepers. It’s about bridges and networks.”</blockquote>
-        <figcaption><strong>Tunç Berkman</strong><span>Partner, TBS Investment &amp; Management</span></figcaption>
-      </figure>
-    </div>
-  </div>
-</section>
-
-<section class="band band--white band--tight" aria-labelledby="partners-title">
-  <div class="wrap stack" style="gap:40px">
-    <div class="section-head">
-      <p class="eyebrow">Network partners</p>
-      <h2 id="partners-title">Built with partners across the ecosystem.</h2>
-    </div>
-    <ul class="partners">
-      <li><a href="https://www.linkedin.com/company/enavc" rel="noopener">ENA Venture Capital {{arrow-out}}</a></li>
-      <li><a href="https://www.linkedin.com/company/treeo-vc" rel="noopener">Treeo VC {{arrow-out}}</a></li>
-      <li><a href="https://www.linkedin.com/company/limaventures" rel="noopener">Lima Ventures {{arrow-out}}</a></li>
-      <li><a href="https://www.linkedin.com/company/platinyaka" rel="noopener">Platin Yaka {{arrow-out}}</a></li>
-      <li><a href="https://www.linkedin.com/company/startans" rel="noopener">Startans {{arrow-out}}</a></li>
-      <li><a href="https://www.linkedin.com/company/redlionscapital" rel="noopener">Red Lions Capital {{arrow-out}}</a></li>
-      <li><a href="https://www.linkedin.com/company/bgo-ventures" rel="noopener">BGO Ventures {{arrow-out}}</a></li>
-      <li><a href="https://www.linkedin.com/company/sistemglobal" rel="noopener">Sistem Global {{arrow-out}}</a></li>
-    </ul>
-  </div>
-</section>
-
-<section class="band band--navy" aria-labelledby="closing-title">
-  <div class="wrap closing">
-    <div class="stack">
-      <p class="eyebrow">Access</p>
-      <h2 id="closing-title">Entry is by introduction.</h2>
-      <p class="lead">Every member joins through a named introduction, and every introduction carries a stated reason.</p>
-    </div>
-    <a class="btn btn--primary btn--lg" href="{{link:membership#apply}}">Request an invitation {{arrow}}</a>
-  </div>
+<section aria-labelledby="closing-title" class="band band--navy">
+<div class="wrap closing">
+<div class="stack">
+<p class="eyebrow">{{t:home.access.label-1}}</p>
+<h2 id="closing-title">{{t:home.access.heading-1}}</h2>
+<p class="lead">{{t:home.access.intro-1}}</p>
+</div>
+<a class="btn btn--primary btn--lg" href="{{link:membership#apply}}">{{t:home.access.button-1}} {{arrow}}</a>
+</div>
 </section>

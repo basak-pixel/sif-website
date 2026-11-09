@@ -1,55 +1,52 @@
 <!-- path: community | title: Community | description: The SIF Ventures member community: investors, founders and domain experts across the UK, Türkiye and Bulgaria. -->
 <section class="hero page-hero">
-  <div class="wrap">
-    <div class="hero-inner">
-      <p class="eyebrow">Community</p>
-      <h1><span class="ln"><span>The network</span></span><span class="ln"><span>is the asset.</span></span></h1>
-      <hr class="rule">
-      <p class="lead">Investors, founders, operators and domain experts who choose to compound inside a system rather than work alone.</p>
-    </div>
-  </div>
+<div class="wrap">
+<div class="hero-inner">
+<p class="eyebrow">{{t:community.hero.label-1}}</p>
+<h1>{{lines:community.hero.headline}}</h1>
+<hr class="rule"/>
+<p class="lead">{{t:community.hero.intro-1}}</p>
+</div>
+</div>
 </section>
-
-<section class="band band--light" aria-labelledby="benefits-title">
-  <div class="wrap stack" style="gap:48px">
-    <div class="section-head">
-      <p class="eyebrow">What members do together</p>
-      <h2 id="benefits-title">Relationships that go beyond a single deal.</h2>
-    </div>
-    <div class="grid-3">
-      <article class="card">
-        <h3>Strategic networking</h3>
-        <p>Meet experienced founders, investors and industry leaders who can offer insight and partnership.</p>
-      </article>
-      <article class="card">
-        <h3>Shared review</h3>
-        <p>Members pool their expertise and share the work of reviewing larger opportunities.</p>
-      </article>
-      <article class="card">
-        <h3>Knowledge sharing</h3>
-        <p>Members learn from each other through discussions, case studies and peer mentoring.</p>
-      </article>
-    </div>
-  </div>
+<section aria-labelledby="benefits-title" class="band band--light">
+<div class="wrap stack" style="gap:48px">
+<div class="section-head">
+<p class="eyebrow">{{t:community.what-members-do.label-1}}</p>
+<h2 id="benefits-title">{{t:community.what-members-do.heading-1}}</h2>
+</div>
+<div class="grid-3">
+<article class="card">
+<h3>{{t:community.what-members-do.title-1}}</h3>
+<p>{{t:community.what-members-do.text-1}}</p>
+</article>
+<article class="card">
+<h3>{{t:community.what-members-do.title-2}}</h3>
+<p>{{t:community.what-members-do.text-2}}</p>
+</article>
+<article class="card">
+<h3>{{t:community.what-members-do.title-3}}</h3>
+<p>{{t:community.what-members-do.text-3}}</p>
+</article>
+</div>
+</div>
 </section>
-
-<section class="band band--white" aria-labelledby="members-title">
-  <div class="wrap stack" style="gap:40px">
-    <div class="section-head">
-      <p class="eyebrow">Members</p>
-      <h2 id="members-title">Members of the network.</h2>
-      <p class="lead">{{member_count}} members who have chosen to be listed.</p>
-    </div>
+<section aria-labelledby="members-title" class="band band--white">
+<div class="wrap stack" style="gap:40px">
+<div class="section-head">
+<p class="eyebrow">{{t:community.members.label-1}}</p>
+<h2 id="members-title">{{t:community.members.heading-1}}</h2>
+<p class="lead">{{t:community.members.intro-1}}</p>
+</div>
     {{members}}
   </div>
 </section>
-
-<section class="band band--navy band--tight" aria-labelledby="community-cta-title">
-  <div class="wrap closing">
-    <div class="stack">
-      <h2 id="community-cta-title">Know someone in the network?</h2>
-      <p class="lead">Ask them to introduce you. Every member joins that way.</p>
-    </div>
-    <a class="btn btn--primary btn--lg" href="{{link:membership#apply}}">How to join {{arrow}}</a>
-  </div>
+<section aria-labelledby="community-cta-title" class="band band--navy band--tight">
+<div class="wrap closing">
+<div class="stack">
+<h2 id="community-cta-title">{{t:community.know-someone-in.heading-1}}</h2>
+<p class="lead">{{t:community.know-someone-in.intro-1}}</p>
+</div>
+<a class="btn btn--primary btn--lg" href="{{link:membership#apply}}">{{t:community.know-someone-in.button-1}} {{arrow}}</a>
+</div>
 </section>
