@@ -47,9 +47,7 @@ NAV = [
     ("community", "Community"),
 ]
 
-ARROW = ('<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" '
-         'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'
-         '<path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>')
+ARROW = ""  # buttons carry no decorative arrows; external links keep ARROW_UP_RIGHT
 ARROW_UP_RIGHT = ('<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" '
                   'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'
                   '<path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg>')
@@ -63,6 +61,18 @@ def wordmark(label=True):
     aria = 'role="img" aria-label="SIF Ventures"' if label else 'aria-hidden="true"'
     return (f'<svg viewBox="1034 886 6140 628" xmlns="http://www.w3.org/2000/svg" {aria}>'
             f"{g}</svg>")
+
+
+def hero_art():
+    """The SIF monogram as a hairline drawing for the hero. Strokes draw themselves on load;
+    the top bar of the F is the one gold line."""
+    src = (SRC / "assets/brand/monogram-source.svg").read_text()
+    paths = re.findall(r'<path d="([^"]+)"', src)
+    names = ["s", "f-bar", "i", "f-stem"]
+    drawn = "".join(f'<path class="m-{n}" pathLength="1" d="{d}"/>' for n, d in zip(names, paths))
+    return ('<div class="hero-art" aria-hidden="true"><svg viewBox="600 930 1230 660" '
+            'preserveAspectRatio="xMaxYMid meet"><g transform="translate(0,2362) scale(0.1,-0.1)">'
+            f"{drawn}</g></svg></div>")
 
 
 def depth(path):
@@ -195,6 +205,7 @@ def render(template, page_path):
     if "{{members}}" in template:
         count, grid = members_grid(page_path)
         template = template.replace("{{members}}", grid)
+    template = template.replace("{{hero_art}}", hero_art() if "{{hero_art}}" in template else "")
     template = (template.replace("{{testimonials}}", testimonials() if "{{testimonials}}" in template else "")
                 .replace("{{partners}}", partners() if "{{partners}}" in template else "")
                 .replace("{{leadership}}", leadership() if "{{leadership}}" in template else "")
@@ -259,7 +270,7 @@ FOOTER = """
         <p class="eyebrow">Contact</p>
         <a href="mailto:{{email}}">{{email}}</a>
         <a href="{{linkedin}}" rel="noopener">LinkedIn</a>
-        <span>UK · TR · BG</span>
+        <span>United Kingdom, Türkiye, Bulgaria</span>
       </div>
     </div>
     <div class="footer-legal">
