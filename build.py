@@ -150,7 +150,8 @@ def copy(key):
 
 def headline_lines(key):
     lines = [l.strip() for l in copy(key).split("\n") if l.strip()]
-    return "".join(f'<span class="ln"><span>{html.escape(l)}</span></span>' for l in lines)
+    # a space between the lines keeps the words apart for search engines and screen readers
+    return " ".join(f'<span class="ln"><span>{html.escape(l)}</span></span>' for l in lines)
 
 
 def by_order(items):
