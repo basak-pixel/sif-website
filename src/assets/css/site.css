@@ -222,7 +222,7 @@ p { margin: 0; }
 }
 .hero-art {
   position: absolute; z-index: -1; pointer-events: none;
-  right: -14vw; top: 50%; width: min(58vw, 900px); transform: translate3d(var(--px, 0px), calc(-50% + var(--py, 0px)), 0);
+  right: -14vw; top: 50%; width: min(58vw, 900px); transform: translateY(-50%);
   will-change: transform;
 }
 .hero-art svg { display: block; width: 100%; height: auto; overflow: visible; }
@@ -231,11 +231,23 @@ p { margin: 0; }
   stroke-dasharray: 1; stroke-dashoffset: 0;
 }
 .hero-art .m-f-bar { stroke: var(--sif-gold); stroke-width: 1.5; }
-.hero-art .trace { stroke: var(--sif-warm-white); stroke-width: 1.4; stroke-linecap: round; stroke-dasharray: 0.12 0.88; opacity: 0; }
+.hero-art path { transition: stroke 1.2s var(--ease-standard); }
+.hero-art .gold { stroke: var(--sif-gold); stroke-width: 1.5; }
+/* the flow: bright segments travel the strokes while the pointer is over the hero */
+.hero-art .trace {
+  stroke: var(--sif-warm-white); stroke-width: 1.5; stroke-linecap: round; stroke-dasharray: 0.12 0.88;
+  opacity: 0; transition: opacity 1.4s var(--ease-standard);
+}
+.hero-art .gold-trace { stroke: #f3d98c; }
+.hero:hover .hero-art .trace { opacity: 0.85; }
+.hero:hover .hero-art path:not(.trace):not(.gold):not(.m-f-bar) { stroke: color-mix(in oklab, var(--sif-warm-white) 48%, transparent); }
+@media (hover: none) { .hero-art .trace { opacity: 0.8; } }
 .hero-art .t-f-bar { stroke: #f3d98c; }
 .hero-art .t-s, .hero-art .t-i { stroke: color-mix(in oklab, var(--sif-gold) 70%, white); }
-.hero-art svg { will-change: transform; }
 .page-hero .hero-art { width: min(50vw, 760px); right: -14vw; opacity: 0.85; }
+.page-hero .hero-art--subject { width: min(40vw, 580px); right: max(2vw, calc((100vw - 1248px) / 2)); opacity: 1; }
+@media (max-width: 1080px) { .page-hero .hero-art--subject { right: -8vw; width: 52vw; opacity: 0.7; } }
+@media (max-width: 760px) { .page-hero .hero-art--subject { width: 96vw; right: -34vw; top: auto; bottom: -14vw; transform: none; opacity: 0.4; } }
 @media (max-width: 760px) {
   .hero-art { width: 150vw; right: -62vw; top: auto; bottom: -12vw; transform: none; opacity: 0.55; }
 }
@@ -469,12 +481,11 @@ a.member-link:hover .member-out, a.member-link:focus-visible .member-out { opaci
   .hero-art .m-f-bar { animation: draw 1.6s var(--ease-lux) both 1.7s; }
   /* after the drawing: signals glide along the strokes, the drawing breathes, the light drifts.
      Durations are long and co-prime so the motion never visibly repeats. */
-  .hero-art .trace { animation: trace 17s linear infinite, traceIn 2.4s ease-in-out forwards; }
-  .hero-art .t-s { animation-duration: 19s, 2.4s; animation-delay: 2.6s, 2.6s; }
-  .hero-art .t-i { animation-duration: 13s, 2.4s; animation-delay: 3.2s, 3.2s; animation-direction: reverse, normal; }
-  .hero-art .t-f-stem { animation-duration: 15s, 2.4s; animation-delay: 2.9s, 2.9s; }
-  .hero-art .t-f-bar { animation-duration: 11s, 2.4s; animation-delay: 3.5s, 3.5s; }
-  .hero-art svg { animation: float 26s cubic-bezier(0.45, 0, 0.55, 1) infinite alternate 3s; }
+  .hero-art .trace { animation: trace 9s linear infinite; animation-delay: 0s !important; }
+  .hero-art .t-s { animation-duration: 10s; }
+  .hero-art .t-i { animation-duration: 6.5s; animation-direction: reverse; }
+  .hero-art .t-f-stem { animation-duration: 8s; }
+  .hero-art .t-f-bar { animation-duration: 5.5s; }
   .hero-glow { animation: lightDrift 30s cubic-bezier(0.45, 0, 0.55, 1) infinite alternate; }
   .hero .eyebrow { animation: fadeIn 1.2s var(--ease-lux) both 0.15s; }
   .hero h1 .ln > span { animation: lineUp 1.3s var(--ease-lux) both; }
@@ -490,8 +501,6 @@ a.member-link:hover .member-out, a.member-link:focus-visible .member-out { opaci
 @keyframes fadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
 @keyframes fadeIn { from { opacity: 0; } }
 @keyframes trace { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
-@keyframes traceIn { to { opacity: 0.85; } }
-@keyframes float { from { transform: translate3d(0, 0, 0) rotate(0deg); } to { transform: translate3d(-10px, 8px, 0) rotate(-0.8deg); } }
 @keyframes lightDrift { from { transform: translate3d(-3%, -2%, 0) scale(1); } to { transform: translate3d(3%, 3%, 0) scale(1.06); } }
 @keyframes ruleIn { from { transform: scaleX(0); } to { transform: scaleX(1); } }
 

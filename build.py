@@ -25,6 +25,8 @@ import shutil
 import sys
 from pathlib import Path
 
+from hero_drawings import DRAWINGS
+
 ROOT = Path(__file__).parent
 SRC = ROOT / "src"
 PREVIEW = "--preview" in sys.argv
@@ -64,9 +66,14 @@ def wordmark(label=True):
             f"{g}</svg>")
 
 
-def hero_art():
-    """The SIF monogram as a hairline drawing for the hero. Strokes draw themselves on load;
-    the top bar of the F is the one gold line."""
+def hero_art(page_path=""):
+    """The hero drawing. Home and About show the SIF monogram; other pages show a drawing of
+    their own subject (hero_drawings.py). Strokes draw themselves on load; the flow runs while
+    the pointer is over the hero."""
+    key = page_path.split("/")[0]
+    if key in DRAWINGS:
+        return ('<div class="hero-glow" aria-hidden="true"></div>'
+                f'<div class="hero-art hero-art--subject" aria-hidden="true">{DRAWINGS[key]().svg()}</div>')
     src = (SRC / "assets/brand/monogram-source.svg").read_text()
     paths = re.findall(r'<path d="([^"]+)"', src)
     names = ["s", "f-bar", "i", "f-stem"]
@@ -208,7 +215,7 @@ def render(template, page_path):
     if "{{members}}" in template:
         count, grid = members_grid(page_path)
         template = template.replace("{{members}}", grid)
-    template = template.replace("{{hero_art}}", hero_art() if "{{hero_art}}" in template else "")
+    template = template.replace("{{hero_art}}", hero_art(page_path) if "{{hero_art}}" in template else "")
     template = (template.replace("{{testimonials}}", testimonials() if "{{testimonials}}" in template else "")
                 .replace("{{partners}}", partners() if "{{partners}}" in template else "")
                 .replace("{{leadership}}", leadership() if "{{leadership}}" in template else "")
