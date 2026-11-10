@@ -19,5 +19,5 @@
       "permanent": true
     }
   ],
-  "buildCommand": "pip install --quiet Pillow >/dev/null 2>&1; python3 scripts/sync_notion.py; python3 build.py"
+  "buildCommand": "if command -v python3 >/dev/null 2>&1; then (pip install --quiet Pillow >/dev/null 2>&1 || true); python3 scripts/sync_notion.py; python3 build.py; else echo 'python3 not found: serving the prebuilt public/ folder'; fi"
 }
