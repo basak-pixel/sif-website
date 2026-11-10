@@ -156,7 +156,8 @@ p { margin: 0; }
 .nav a:hover::after { transform: scaleX(1); }
 .nav a[aria-current="page"] { color: var(--text-on-inverse); }
 .nav a[aria-current="page"]::after { transform: scaleX(1); background: var(--sif-gold); }
-.header-actions { display: flex; align-items: center; gap: 10px; }
+.header-actions { display: flex; align-items: center; gap: 10px; flex: none; }
+.header-actions .btn { white-space: nowrap; }
 @media (max-width: 1180px) and (min-width: 961px) { .nav { gap: 22px; } }
 @media (max-width: 960px) {
   .site-header .wrap { flex-wrap: wrap; row-gap: 0; column-gap: 12px; padding-block: 14px 0; }
@@ -245,9 +246,9 @@ p { margin: 0; }
 .hero-art .t-f-bar { stroke: #f3d98c; }
 .hero-art .t-s, .hero-art .t-i { stroke: color-mix(in oklab, var(--sif-gold) 70%, white); }
 .page-hero .hero-art { width: min(50vw, 760px); right: -14vw; opacity: 0.85; }
-.page-hero .hero-art--subject { width: min(40vw, 580px); right: max(2vw, calc((100vw - 1248px) / 2)); opacity: 1; }
-@media (max-width: 1080px) { .page-hero .hero-art--subject { right: -8vw; width: 52vw; opacity: 0.7; } }
-@media (max-width: 760px) { .page-hero .hero-art--subject { width: 96vw; right: -34vw; top: auto; bottom: -14vw; transform: none; opacity: 0.4; } }
+.hero .hero-art--subject { width: min(40vw, 580px); top: 50%; transform: translateY(-50%); right: max(2vw, calc((100vw - 1248px) / 2)); opacity: 1; }
+@media (max-width: 1080px) { .hero .hero-art--subject { right: -8vw; width: 52vw; opacity: 0.7; } }
+@media (max-width: 760px) { .hero .hero-art--subject { width: 96vw; right: -34vw; top: auto; bottom: -14vw; transform: none; opacity: 0.4; } }
 @media (max-width: 760px) {
   .hero-art { width: 150vw; right: -62vw; top: auto; bottom: -12vw; transform: none; opacity: 0.55; }
 }
@@ -532,3 +533,20 @@ a.member-link:hover .member-out, a.member-link:focus-visible .member-out { opaci
   @view-transition { navigation: none; }
   *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
 }
+
+.hero:not(.page-hero) .hero-art--subject { width: min(44vw, 660px); }
+
+/* Home: the structure. It stands still; light keeps moving through it (calm, continuous),
+   brighter while the pointer is over the hero. The gold edge breathes. */
+.hero:not(.page-hero) .hero-art--structure { width: min(29vw, 420px); right: max(4vw, calc((100vw - 1200px) / 2 + 10px)); }
+.hero:not(.page-hero) .hero-art .trace { opacity: 0.45; }
+.hero:not(.page-hero):hover .hero-art .trace { opacity: 0.9; }
+@media (prefers-reduced-motion: no-preference) {
+  .hero:not(.page-hero) .hero-art .gold { animation: draw 3.2s var(--ease-lux) both, breathe 7s cubic-bezier(0.45, 0, 0.55, 1) infinite alternate; }
+  .hero:not(.page-hero) .hero-art .trace { animation-timing-function: cubic-bezier(0.45, 0, 0.55, 1); }
+}
+@keyframes breathe { from { stroke-opacity: 1; } to { stroke-opacity: 0.45; } }
+@media (max-width: 1080px) { .hero:not(.page-hero) .hero-art--structure { width: 34vw; right: 2vw; opacity: 0.75; } }
+@media (max-width: 760px) { .hero:not(.page-hero) .hero-art--structure { width: 62vw; right: -6vw; top: auto; bottom: -6vw; transform: none; opacity: 0.4; } }
+.page-hero.hero--core .hero-art--subject { width: min(32vw, 470px); }
+@media (max-width: 760px) { .page-hero.hero--core .hero-art--subject { width: 96vw; } }

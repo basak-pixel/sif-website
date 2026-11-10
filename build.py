@@ -18,6 +18,7 @@ Page templates use these slots:
 The first line of each page is a comment with its path: <!-- path: about-us | ... -->
 """
 import datetime
+import os
 import html
 import json
 import re
@@ -71,9 +72,12 @@ def hero_art(page_path=""):
     their own subject (hero_drawings.py). Strokes draw themselves on load; the flow runs while
     the pointer is over the hero."""
     key = page_path.split("/")[0]
+    if page_path == "" and os.environ.get("HOME_HERO"):
+        key = "home-" + os.environ["HOME_HERO"]  # try a candidate drawing on the home page
     if key in DRAWINGS:
+        extra = " hero-art--structure" if DRAWINGS[key].__name__ == "home_structure" else ""
         return ('<div class="hero-glow" aria-hidden="true"></div>'
-                f'<div class="hero-art hero-art--subject" aria-hidden="true">{DRAWINGS[key]().svg()}</div>')
+                f'<div class="hero-art hero-art--subject{extra}" aria-hidden="true">{DRAWINGS[key]().svg()}</div>')
     src = (SRC / "assets/brand/monogram-source.svg").read_text()
     paths = re.findall(r'<path d="([^"]+)"', src)
     names = ["s", "f-bar", "i", "f-stem"]

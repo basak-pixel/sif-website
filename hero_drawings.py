@@ -210,3 +210,71 @@ DRAWINGS = {
     "founding-membership": founding,
     "club-membership": club,
 }
+
+
+# ---------- Home page candidates ----------
+
+def home_structure():
+    """The structure is the edge: an isometric frame of uneven towers (we architect asymmetry).
+    The highest edge is gold."""
+    g = Drawing("290 236 414 600")
+    s, cx, cy = 62, 470, 600
+    c30, s30 = math.cos(math.pi / 6), math.sin(math.pi / 6)
+
+    def P(x, y, z):
+        return (cx + (x - y) * c30 * s, cy + (x + y) * s30 * s - z * s)
+    heights = {(0, 0): 2, (1, 0): 3, (2, 0): 5, (3, 0): 4,
+               (0, 1): 1, (1, 1): 4, (2, 1): 7, (3, 1): 3,
+               (0, 2): 2, (1, 2): 2, (2, 2): 4, (3, 2): 1}
+    top = max(heights.values())
+    for (x, y), h in heights.items():
+        for z in range(h + 1):  # floor plates
+            ring = [P(x, y, z), P(x + 1, y, z), P(x + 1, y + 1, z), P(x, y + 1, z)]
+            g.poly(ring, close=True, flow=(z == h and h >= 4))
+        for dx, dy in ((0, 0), (1, 0), (1, 1), (0, 1)):  # columns
+            a, b = P(x + dx, y + dy, 0), P(x + dx, y + dy, h)
+            g.line(a[0], a[1], b[0], b[1], flow=(h == top))
+    (gx, gy) = max(heights, key=heights.get)
+    a, b = P(gx, gy + 1, top), P(gx + 1, gy + 1, top)
+    g.line(a[0], a[1], b[0], b[1], gold=True, flow=True)
+    return g
+
+
+def home_capitals():
+    """Social, intellectual and financial capital as three overlapping rings; their meeting point in gold."""
+    g = Drawing("0 0 800 800")
+    cx, cy, r, d = 400, 410, 210, 120
+    centres = [(cx + d * math.cos(a), cy + d * math.sin(a)) for a in (-math.pi / 2, math.pi / 6, 5 * math.pi / 6)]
+    for x, y in centres:
+        g.circle(x, y, r, flow=True)
+        g.circle(x, y, r - 14)
+    for i in range(3):
+        a, b = centres[i], centres[(i + 1) % 3]
+        g.line(a[0], a[1], b[0], b[1])
+    for x, y in centres:
+        g.circle(x, y, 5)
+    g.circle(cx, cy, 34, gold=True, flow=True)
+    g.circle(cx, cy, 4, gold=True)
+    return g
+
+
+def home_signal():
+    """Signal, proof, timing: a field of quiet lines, one of which rises in gold."""
+    g = Drawing("0 0 900 700")
+    n = 15
+    for k in range(n):
+        y0 = 90 + k * 36
+        gold = k == 9
+        pts = []
+        for i in range(61):
+            x = 40 + i * 13.6
+            t = i / 60
+            bump = math.exp(-((t - 0.62) ** 2) / 0.012)
+            amp = (150 if gold else 26 * math.exp(-((k - 9) ** 2) / 10)) * bump
+            pts.append((x, y0 - amp + 3 * math.sin(i / 4 + k)))
+        g.poly(pts, gold=gold, flow=(gold or k % 3 == 0))
+    return g
+
+
+DRAWINGS.update({"home-structure": home_structure, "home-capitals": home_capitals, "home-signal": home_signal,
+                 "": home_structure, "about-us": home_capitals})
