@@ -202,12 +202,14 @@ p { margin: 0; }
 /* ---------- Hero: the drawing ---------- */
 .hero {
   position: relative; overflow: hidden; color: var(--text-on-inverse-muted); isolation: isolate;
+  background: linear-gradient(180deg, #101a33 0%, var(--sif-deep-navy) 70%, #0a1124 100%);
+}
+.hero-glow {
+  position: absolute; inset: -20% -10%; z-index: -2; pointer-events: none;
   background:
-    radial-gradient(60% 75% at 80% 42%, #1d2b52 0%, rgba(29, 43, 82, 0) 70%),
-    radial-gradient(28% 34% at 92% 18%, rgba(221, 178, 73, 0.16) 0%, rgba(221, 178, 73, 0) 70%),
-    linear-gradient(180deg, #101a33 0%, var(--sif-deep-navy) 70%, #0a1124 100%);
-  background-size: 140% 140%, 140% 140%, 100% 100%;
-  background-position: 50% 50%, 50% 50%, 0 0;
+    radial-gradient(42% 52% at 76% 44%, rgba(34, 50, 96, 0.95) 0%, rgba(29, 43, 82, 0) 72%),
+    radial-gradient(20% 24% at 90% 22%, rgba(221, 178, 73, 0.15) 0%, rgba(221, 178, 73, 0) 72%);
+  will-change: transform; transform: translate3d(0, 0, 0);
 }
 /* construction grid: six column lines, drawn top to bottom on load */
 .hero::before {
@@ -221,7 +223,7 @@ p { margin: 0; }
 .hero-art {
   position: absolute; z-index: -1; pointer-events: none;
   right: -14vw; top: 50%; width: min(58vw, 900px); transform: translate3d(var(--px, 0px), calc(-50% + var(--py, 0px)), 0);
-  transition: transform 1.2s var(--ease-lux);
+  will-change: transform;
 }
 .hero-art svg { display: block; width: 100%; height: auto; overflow: visible; }
 .hero-art path {
@@ -229,10 +231,10 @@ p { margin: 0; }
   stroke-dasharray: 1; stroke-dashoffset: 0;
 }
 .hero-art .m-f-bar { stroke: var(--sif-gold); stroke-width: 1.5; }
-.hero-art .trace { stroke: var(--sif-warm-white); stroke-width: 1.6; stroke-linecap: round; stroke-dasharray: 0.07 0.93; opacity: 0; }
+.hero-art .trace { stroke: var(--sif-warm-white); stroke-width: 1.4; stroke-linecap: round; stroke-dasharray: 0.12 0.88; opacity: 0; }
 .hero-art .t-f-bar { stroke: #f3d98c; }
 .hero-art .t-s, .hero-art .t-i { stroke: color-mix(in oklab, var(--sif-gold) 70%, white); }
-.hero-art svg { filter: drop-shadow(0 0 18px rgba(221, 178, 73, 0.12)); }
+.hero-art svg { will-change: transform; }
 .page-hero .hero-art { width: min(50vw, 760px); right: -14vw; opacity: 0.85; }
 @media (max-width: 760px) {
   .hero-art { width: 150vw; right: -62vw; top: auto; bottom: -12vw; transform: none; opacity: 0.55; }
@@ -465,15 +467,15 @@ a.member-link:hover .member-out, a.member-link:focus-visible .member-out { opaci
   .hero-art .m-i { animation-delay: 0.7s; }
   .hero-art .m-f-stem { animation-delay: 0.95s; }
   .hero-art .m-f-bar { animation: draw 1.6s var(--ease-lux) both 1.7s; }
-  /* after the drawing: signals keep travelling the strokes, the drawing floats, the light drifts */
-  .hero-art .trace { animation: trace 9s linear infinite, traceIn 0.8s ease-out forwards; }
-  .hero-art .t-s { animation-duration: 11s, 0.8s; animation-delay: 2.4s, 2.4s; }
-  .hero-art .t-i { animation-duration: 6.5s, 0.8s; animation-delay: 3.1s, 3.1s; animation-direction: reverse, normal; }
-  .hero-art .t-f-stem { animation-duration: 8s, 0.8s; animation-delay: 2.8s, 2.8s; }
-  .hero-art .t-f-bar { animation-duration: 4.5s, 0.8s; animation-delay: 3.4s, 3.4s; }
-  .hero-art svg { animation: float 16s ease-in-out infinite alternate 3s; }
-  .hero-art .m-f-bar { filter: drop-shadow(0 0 6px rgba(221, 178, 73, 0.6)); }
-  .hero { animation: lightDrift 22s ease-in-out infinite alternate; }
+  /* after the drawing: signals glide along the strokes, the drawing breathes, the light drifts.
+     Durations are long and co-prime so the motion never visibly repeats. */
+  .hero-art .trace { animation: trace 17s linear infinite, traceIn 2.4s ease-in-out forwards; }
+  .hero-art .t-s { animation-duration: 19s, 2.4s; animation-delay: 2.6s, 2.6s; }
+  .hero-art .t-i { animation-duration: 13s, 2.4s; animation-delay: 3.2s, 3.2s; animation-direction: reverse, normal; }
+  .hero-art .t-f-stem { animation-duration: 15s, 2.4s; animation-delay: 2.9s, 2.9s; }
+  .hero-art .t-f-bar { animation-duration: 11s, 2.4s; animation-delay: 3.5s, 3.5s; }
+  .hero-art svg { animation: float 26s cubic-bezier(0.45, 0, 0.55, 1) infinite alternate 3s; }
+  .hero-glow { animation: lightDrift 30s cubic-bezier(0.45, 0, 0.55, 1) infinite alternate; }
   .hero .eyebrow { animation: fadeIn 1.2s var(--ease-lux) both 0.15s; }
   .hero h1 .ln > span { animation: lineUp 1.3s var(--ease-lux) both; }
   .hero h1 .ln:nth-child(1) > span { animation-delay: 0.25s; }
@@ -488,9 +490,9 @@ a.member-link:hover .member-out, a.member-link:focus-visible .member-out { opaci
 @keyframes fadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
 @keyframes fadeIn { from { opacity: 0; } }
 @keyframes trace { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
-@keyframes traceIn { to { opacity: 0.9; } }
-@keyframes float { from { transform: translate3d(0, 0, 0) rotate(0deg); } to { transform: translate3d(-14px, 10px, 0) rotate(-1.2deg); } }
-@keyframes lightDrift { from { background-position: 40% 40%, 60% 40%, 0 0; } to { background-position: 62% 58%, 30% 62%, 0 0; } }
+@keyframes traceIn { to { opacity: 0.85; } }
+@keyframes float { from { transform: translate3d(0, 0, 0) rotate(0deg); } to { transform: translate3d(-10px, 8px, 0) rotate(-0.8deg); } }
+@keyframes lightDrift { from { transform: translate3d(-3%, -2%, 0) scale(1); } to { transform: translate3d(3%, 3%, 0) scale(1.06); } }
 @keyframes ruleIn { from { transform: scaleX(0); } to { transform: scaleX(1); } }
 
 @supports (animation-timeline: view()) {

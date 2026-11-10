@@ -73,7 +73,7 @@ def hero_art():
     drawn = "".join(f'<path class="m-{n}" pathLength="1" d="{d}"/>' for n, d in zip(names, paths))
     # signals: short bright segments that keep travelling along each stroke after it is drawn
     drawn += "".join(f'<path class="trace t-{n}" pathLength="1" d="{d}"/>' for n, d in zip(names, paths))
-    return ('<div class="hero-art" aria-hidden="true"><svg viewBox="600 930 1230 660" '
+    return ('<div class="hero-glow" aria-hidden="true"></div><div class="hero-art" aria-hidden="true"><svg viewBox="600 930 1230 660" '
             'preserveAspectRatio="xMaxYMid meet"><g transform="translate(0,2362) scale(0.1,-0.1)">'
             f"{drawn}</g></svg></div>")
 
