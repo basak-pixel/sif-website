@@ -36,6 +36,7 @@ COPY = CONTENT.get("copy", {})
 SETTINGS = CONTENT.get("settings", {})
 EMAIL = SETTINGS.get("contact_email", "team@sifventures.com")
 LOGIN_URL = SETTINGS.get("login_url", "/login/")
+MYSIF_URL = SETTINGS.get("mysif_url") or LOGIN_URL  # "MY SIF link" in Notion Settings
 LINKEDIN_URL = SETTINGS.get("linkedin_url", "https://www.linkedin.com/company/smartinvestmentforum")
 MISSING = set()
 
@@ -70,6 +71,8 @@ def hero_art():
     paths = re.findall(r'<path d="([^"]+)"', src)
     names = ["s", "f-bar", "i", "f-stem"]
     drawn = "".join(f'<path class="m-{n}" pathLength="1" d="{d}"/>' for n, d in zip(names, paths))
+    # signals: short bright segments that keep travelling along each stroke after it is drawn
+    drawn += "".join(f'<path class="trace t-{n}" pathLength="1" d="{d}"/>' for n, d in zip(names, paths))
     return ('<div class="hero-art" aria-hidden="true"><svg viewBox="600 930 1230 660" '
             'preserveAspectRatio="xMaxYMid meet"><g transform="translate(0,2362) scale(0.1,-0.1)">'
             f"{drawn}</g></svg></div>")
@@ -154,10 +157,10 @@ def testimonials():
         role = f'<span>{html.escape(t["role"])}</span>' if t.get("role") else ""
         return (f'<figure class="{cls}"><blockquote>\u201c{html.escape(t["quote"].strip("\u201c\u201d\""))}\u201d</blockquote>'
                 f'<figcaption><strong>{html.escape(t["name"])}</strong>{role}</figcaption></figure>')
-    out = fig(featured, "quote quote--lg").replace('class="quote quote--lg"', 'class="quote quote--lg" style="max-width:30ch"')
+    out = fig(featured, "quote quote--lg")
     if rest:
-        out += '<div class="grid-2">' + "".join(fig(t, "quote card") for t in rest) + "</div>"
-    return out
+        out += '<div class="quote-stack">' + "".join(fig(t, "quote quote--sm") for t in rest) + "</div>"
+    return f'<div class="testimonials">{out}</div>'
 
 
 def partners():
@@ -218,6 +221,7 @@ def render(template, page_path):
     template = template.replace("{{email}}", EMAIL)
     template = template.replace("{{arrow}}", ARROW).replace("{{arrow-out}}", ARROW_UP_RIGHT)
     template = template.replace("{{login}}", LOGIN_URL if not PREVIEW else link("membership", page_path))
+    template = template.replace("{{mysif}}", MYSIF_URL if not (PREVIEW and MYSIF_URL.startswith("/")) else "#")
     template = template.replace("{{linkedin}}", LINKEDIN_URL)
     return template
 
@@ -235,11 +239,10 @@ def header(page_path):
   <div class="wrap">
     <a class="brand" href="{{{{link:}}}}">{wordmark()}</a>
     <nav class="nav" aria-label="Main">{nav}</nav>
-    <a class="btn btn--primary header-cta" href="{{{{link:membership#apply}}}}">{{{{t:global.header.cta}}}}</a>
-    <details class="menu">
-      <summary>Menu</summary>
-      <nav class="menu-panel" aria-label="Main">{nav}<a class="btn btn--primary" href="{{{{link:membership#apply}}}}">{{{{t:global.header.cta}}}}</a></nav>
-    </details>
+    <div class="header-actions">
+      <a class="btn btn--line btn--sm" href="{{{{mysif}}}}">{{{{t:global.header.mysif}}}}</a>
+      <a class="btn btn--primary btn--sm header-cta" href="{{{{link:membership#apply}}}}">{{{{t:global.header.cta}}}}</a>
+    </div>
   </div>
 </header>"""
 
@@ -264,7 +267,7 @@ FOOTER = """
         <p class="eyebrow">Membership</p>
         <a href="{{link:founding-membership}}">Founding membership</a>
         <a href="{{link:club-membership}}">Club membership</a>
-        <a href="{{login}}">Member login</a>
+        <a href="{{mysif}}">{{t:global.header.mysif}}</a>
       </div>
       <div>
         <p class="eyebrow">Contact</p>

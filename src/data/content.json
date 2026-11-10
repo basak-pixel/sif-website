@@ -262,7 +262,8 @@
   "community.know-someone-in.heading-1": "Know someone in the network?",
   "community.know-someone-in.intro-1": "Ask them to introduce you. Every member joins that way.",
   "community.know-someone-in.button-1": "How to join",
-  "events.upcoming.empty": "New dates are shared with members first. Check back soon."
+  "events.upcoming.empty": "New dates are shared with members first. Check back soon.",
+  "global.header.mysif": "Access MY SIF"
  },
  "events": [
   {
@@ -402,7 +403,8 @@
  "settings": {
   "contact_email": "team@sifventures.com",
   "login_url": "/login/",
-  "linkedin_url": "https://www.linkedin.com/company/smartinvestmentforum"
+  "linkedin_url": "https://www.linkedin.com/company/smartinvestmentforum",
+  "mysif_url": ""
  },
  "members": [
   {
