@@ -58,10 +58,7 @@ DATABASES = {
     "settings": "2480fc6b468b49d3a6690af08d1ba6d6",
     "members": "258dd62a-dd0d-801a-ad81-d6afc66e1a08",
 }
-MEMBER_STAGES = {
-    "6- Reserved", "7- Collection", "8- Payment in Progress",
-    "9- Paid | (Member EFM)", "0- Renewal Fee Due (CM)",
-}
+MEMBER_STAGES = {"8- Payment in Progress", "9- Paid | (Member EFM)"}
 SHOW_NAMES = ("website: show", "website show", "show on website")
 
 # Financial promotion red flags. Public pages must not carry returns, deal terms or
