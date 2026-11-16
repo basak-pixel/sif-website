@@ -242,7 +242,7 @@ def sync_members(previous):
     for row in rows:
         props = row["properties"]
         show = next((p for k, p in props.items() if p.get("type") == "checkbox" and k.lower().strip() in SHOW_NAMES), None)
-        if not (show and show.get("checkbox")) or text(props.get("Conversion Status")) not in MEMBER_STAGES:
+        if not (show and show.get("checkbox")):
             continue
         name = text(props.get("Name"))
         if not name:
@@ -265,6 +265,13 @@ def sync_members(previous):
             "linkedin": text(props.get("LinkedIn")),
             "photo": photo,
         })
+    # People who were already on the site but have no row in SIF Members stay as they are.
+    in_table = {slug(text(r["properties"].get("Name"))) for r in rows}
+    for old in previous.get("members", []):
+        if slug(old.get("name", "")) not in in_table:
+            members.append(old)
+            if old.get("photo"):
+                keep.add(Path(old["photo"]).name)
     for old in PHOTOS.glob("*"):
         if old.name not in keep and old.suffix in (".webp", ".jpg", ".jpeg", ".png"):
             old.unlink()  # someone who left the list takes their photo with them
