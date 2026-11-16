@@ -43,7 +43,7 @@ The new site keeps the WordPress addresses (`/about-us/`, `/membership/`, `/foun
 ## Members from Notion
 
 The community page lists people from **SIF Members** when **Website: Show** (checkbox) is ticked
-and **Conversion Status** is Reserved, Collection, Payment in Progress, Paid or Renewal Fee Due.
+and **Conversion Status** is Payment in Progress or Paid.
 Cards show Name, the first role in Unvan, the first company in Şirket, LinkedIn, and the photo in
 **Website Photo** (files). Optional **Website Title** / **Website Company** override the card text.
 Until the Website: Show checkbox exists, the sync keeps the current list.
