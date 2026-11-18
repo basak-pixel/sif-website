@@ -550,3 +550,8 @@ a.member-link:hover .member-out, a.member-link:focus-visible .member-out { opaci
 @media (max-width: 760px) { .hero:not(.page-hero) .hero-art--structure { width: 62vw; right: -6vw; top: auto; bottom: -6vw; transform: none; opacity: 0.4; } }
 .page-hero.hero--core .hero-art--subject { width: min(32vw, 470px); }
 @media (max-width: 760px) { .page-hero.hero--core .hero-art--subject { width: 96vw; } }
+
+/* "Book a call" link under membership pricing */
+.tier-call { margin: 0; font-family: var(--font-subtitle); font-size: var(--text-label); font-weight: 600; }
+.tier-call a { color: inherit; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 4px; }
+.tier-call a:hover { text-decoration-color: var(--sif-gold); }

@@ -204,7 +204,7 @@ def club():
 
 DRAWINGS = {
     "community": community,
-    "portfolio": opportunities,
+    "opportunities": opportunities,
     "events": events,
     "membership": membership,
     "founding-membership": founding,

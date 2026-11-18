@@ -40,13 +40,14 @@ SETTINGS = CONTENT.get("settings", {})
 EMAIL = SETTINGS.get("contact_email", "team@sifventures.com")
 LOGIN_URL = SETTINGS.get("login_url", "/login/")
 MYSIF_URL = SETTINGS.get("mysif_url") or LOGIN_URL  # "MY SIF link" in Notion Settings
+BOOKING_URL = SETTINGS.get("booking_url", "")  # "Book a call link" in Notion Settings; empty = email
 LINKEDIN_URL = SETTINGS.get("linkedin_url", "https://www.linkedin.com/company/smartinvestmentforum")
 MISSING = set()
 
 NAV = [
     ("about-us", "About"),
     ("membership", "Membership"),
-    ("portfolio", "Opportunities"),
+    ("opportunities", "Opportunities"),
     ("events", "Events"),
     ("community", "Community"),
 ]
@@ -234,6 +235,7 @@ def render(template, page_path):
     template = template.replace("{{arrow}}", ARROW).replace("{{arrow-out}}", ARROW_UP_RIGHT)
     template = template.replace("{{login}}", LOGIN_URL if not PREVIEW else link("membership", page_path))
     template = template.replace("{{mysif}}", MYSIF_URL if not (PREVIEW and MYSIF_URL.startswith("/")) else "#")
+    template = template.replace("{{book}}", BOOKING_URL or mailto("Membership call"))
     template = template.replace("{{linkedin}}", LINKEDIN_URL)
     return template
 
@@ -271,7 +273,7 @@ FOOTER = """
         <p class="eyebrow">Navigate</p>
         <a href="{{link:about-us}}">About</a>
         <a href="{{link:membership}}">Membership</a>
-        <a href="{{link:portfolio}}">Opportunities</a>
+        <a href="{{link:opportunities}}">Opportunities</a>
         <a href="{{link:events}}">Events</a>
         <a href="{{link:community}}">Community</a>
       </div>
@@ -310,7 +312,7 @@ def build_page(src_file, css, js):
     meta = dict(part.split(":", 1) for part in meta_line.strip()[4:-3].split(" | "))
     meta = {k.strip(): v.strip() for k, v in meta.items()}
     path = meta["path"]
-    pkey = path or "home"
+    pkey = {"": "home", "opportunities": "portfolio"}.get(path, path)  # Notion keys keep the old page name
     title = copy(f"{pkey}.meta.title") or meta.get("title", "SIF Ventures")
     full_title = title if "SIF Ventures" in title else f"{title} | SIF Ventures"
     if PREVIEW and path == "":

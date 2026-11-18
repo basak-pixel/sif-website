@@ -37,7 +37,7 @@ Run `python3 build.py` to produce the site in `public/`.
 ## Page addresses
 
 The new site keeps the WordPress addresses (`/about-us/`, `/membership/`, `/founding-membership/`,
-`/club-membership/`, `/portfolio/`, `/events/`, `/community/`), so existing links keep working.
+`/club-membership/`, `/opportunities/` (old `/portfolio/` redirects), `/events/`, `/community/`), so existing links keep working.
 `vercel.json` forwards the few retired ones: `/deal-flow/` and `/registration/`.
 
 ## Members from Notion
