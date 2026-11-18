@@ -45,6 +45,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 CONTENT = ROOT / "src/data/content.json"
 PHOTOS = ROOT / "src/assets/members"
+MANUAL_PHOTOS = ROOT / "src/assets/member-photos"  # photos sent by chat; Notion's Website Photo wins
 API = "https://api.notion.com/v1"
 NOTION_VERSION = "2022-06-28"
 SITE_URL = os.environ.get("SITE_URL", "https://sifventures.com").rstrip("/")
@@ -189,6 +190,17 @@ def save_photo(url, name):
     return "assets/members/" + out.name
 
 
+def manual_photo(name):
+    """A photo sent outside Notion, kept in src/assets/member-photos/<slug>.webp.
+    Used only when the person's Website Photo in Notion is empty."""
+    src = MANUAL_PHOTOS / (slug(name) + ".webp")
+    if not src.exists():
+        return ""
+    PHOTOS.mkdir(parents=True, exist_ok=True)
+    (PHOTOS / src.name).write_bytes(src.read_bytes())
+    return "assets/members/" + src.name
+
+
 def sync_copy(previous, blocked):
     copy = dict(previous.get("copy", {}))
     for row in query(DATABASES["copy"]):
@@ -258,6 +270,10 @@ def sync_members(previous):
                     keep.add(Path(photo).name)
                 except (urllib.error.URLError, OSError) as err:
                     print(f"sync_notion: photo for {name} skipped ({err})")
+        if not photo:
+            photo = manual_photo(name)
+            if photo:
+                keep.add(Path(photo).name)
         members.append({
             "name": name,
             "title": text(props.get("Website Title")) or first_part(text(props.get("Unvan"))),
@@ -269,6 +285,7 @@ def sync_members(previous):
     in_table = {slug(text(r["properties"].get("Name"))) for r in rows}
     for old in previous.get("members", []):
         if slug(old.get("name", "")) not in in_table:
+            old = dict(old, photo=old.get("photo") or manual_photo(old.get("name", "")))
             members.append(old)
             if old.get("photo"):
                 keep.add(Path(old["photo"]).name)

@@ -79,3 +79,8 @@ Run new copy through the `sif-compliance-check` skill before publishing.
 
 Open decisions before launch: where "Member login" points once WordPress is retired, and whether
 membership fees stay public.
+
+### Member photos sent by chat
+A photo that arrives outside Notion is cropped to 480×600 and saved as
+`src/assets/member-photos/<name-slug>.webp` (for example `ali-yildirim.webp`). The site uses it
+when the person's **Website Photo** in SIF Members is empty; a photo in Notion always wins.
