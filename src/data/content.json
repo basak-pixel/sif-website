@@ -283,14 +283,6 @@
  },
  "events": [
   {
-   "name": "SIF Summit",
-   "date": "2026-12-04",
-   "time": "6:00 pm",
-   "location": "Venue to be announced",
-   "description": "The network's annual gathering. Details will be shared with members first.",
-   "rsvp": true
-  },
-  {
    "name": "SIF Day: Knowledge × Network = Value",
    "date": "2026-10-15",
    "time": "",
@@ -362,6 +354,26 @@
    "name": "Sistem Global",
    "link": "https://www.linkedin.com/company/sistemglobal",
    "order": 8
+  },
+  {
+   "name": "PPK",
+   "link": "https://ppkinnovation.com",
+   "order": 9
+  },
+  {
+   "name": "Eilla",
+   "link": "https://eilla.ai",
+   "order": 10
+  },
+  {
+   "name": "Bulutistan",
+   "link": "https://bulutistan.com",
+   "order": 11
+  },
+  {
+   "name": "ODC Ventures",
+   "link": "https://odc.ventures",
+   "order": 12
   }
  ],
  "leadership": [
@@ -558,8 +570,8 @@
   },
   {
    "name": "Ferda Kert",
-   "title": "Chairman",
-   "company": "SIF Ventures UK",
+   "title": "Founder",
+   "company": "SIF Ventures",
    "linkedin": "https://www.linkedin.com/in/ferdakert/",
    "photo": ""
   },
