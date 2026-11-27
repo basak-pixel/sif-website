@@ -30,6 +30,8 @@ from hero_drawings import DRAWINGS
 
 ROOT = Path(__file__).parent
 SRC = ROOT / "src"
+sys.path.insert(0, str(ROOT / "scripts"))
+from sync_notion import slug  # noqa: E402
 PREVIEW = "--preview" in sys.argv
 OUT = ROOT / ("preview" if PREVIEW else "public")
 
@@ -191,6 +193,9 @@ def leadership():
     return f'<ul class="people">{lis}</ul>'
 
 
+EVENT_PHOTOS = SRC / "assets/event-photos"
+
+
 def events(upcoming):
     today = datetime.date.today().isoformat()
     items = [e for e in CONTENT.get("events", []) if e.get("date")]
@@ -213,7 +218,13 @@ def events(upcoming):
                       if e.get("rsvp") else "<span></span>")
         else:
             action = '<span class="badge badge--quiet">Held</span>'
-        out.append(f'<article class="event">{when}{body}{action}</article>')
+        photo = EVENT_PHOTOS / (slug(e["name"]) + ".webp")
+        if photo.exists():
+            img = (f'<img class="event-photo" src="/assets/event-photos/{photo.name}" alt="{html.escape(e["name"])}" '
+                   'loading="lazy" decoding="async" width="960" height="640">')
+            out.append(f'<article class="event event--photo">{when}{body}{action}{img}</article>')
+        else:
+            out.append(f'<article class="event">{when}{body}{action}</article>')
     return "<div>" + "".join(out) + "</div>"
 
 
