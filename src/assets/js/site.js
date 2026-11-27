@@ -16,4 +16,10 @@
     });
   }
 
+  var hero = document.querySelector(".hero");
+  if (hero && "IntersectionObserver" in window) {
+    new IntersectionObserver(function (entries) {
+      hero.classList.toggle("is-away", !entries[0].isIntersecting);
+    }, { threshold: 0 }).observe(hero);
+  }
 })();

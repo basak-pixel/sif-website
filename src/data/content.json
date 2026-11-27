@@ -62,7 +62,7 @@
     "about-us.mission.text-1": "SIF connects carefully reviewed opportunities with experienced investors. The network was founded by investment and technology professionals who saw the same pattern again and again: strong companies in our region fail for lack of access, not potential.",
     "about-us.mission.text-2": "Our answer is structural. Members bring opportunities they know first-hand. Domain experts review them. Members then decide for themselves, with the analysis and the network behind them.",
     "about-us.mission.label-2": "Our role",
-    "about-us.mission.text-3": "SIF is an intermediary. It brings opportunities to members and does not invest on their behalf or give investment advice.",
+    "about-us.mission.text-3": "SIF is an intermediary. It brings opportunities to members and does not give investment advice.",
     "about-us.how-we-operate.label-1": "How we operate",
     "about-us.how-we-operate.heading-1": "Three steps, every time.",
     "about-us.how-we-operate.title-1": "Sourcing",
@@ -295,7 +295,10 @@
     "home.who.title-2": "Founders and operators",
     "home.who.text-2": "Introductions to customers, partners and buyers, plus go-to-market help and exit preparation to grow your business.",
     "home.who.title-3": "Domain experts",
-    "home.who.text-3": "A place to put your knowledge and relationships to work, and to be recognised for it."
+    "home.who.text-3": "A place to put your knowledge and relationships to work, and to be recognised for it.",
+    "about-us.delta.label-1": "Our sister company",
+    "about-us.delta.heading-1": "Delta prepares companies for what comes next.",
+    "about-us.delta.text-1": "Delta is SIF's sister company. It looks for the hidden value in a company, prepares it for M&A and exit processes, and introduces it to sell-side and buy-side partners."
   },
   "events": [
     {

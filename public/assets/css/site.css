@@ -137,7 +137,6 @@ p { margin: 0; }
 .site-header {
   position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20;
   background: var(--surface-inverse); color: var(--text-on-inverse);
-  -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
 }
 .site-header .wrap { display: flex; align-items: center; justify-content: space-between; gap: 32px; padding-block: 22px; }
 .brand { display: inline-flex; align-items: center; color: var(--text-on-inverse); text-decoration: none; }
@@ -554,3 +553,6 @@ a.member-link:hover .member-out, a.member-link:focus-visible .member-out { opaci
 .tier-call { margin: 0; font-family: var(--font-subtitle); font-size: var(--text-label); font-weight: 600; }
 .tier-call a { color: inherit; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 4px; }
 .tier-call a:hover { text-decoration-color: var(--sif-gold); }
+
+/* Scroll performance: the hero's endless light/breathing animations pause once the hero is off screen. */
+.hero.is-away *, .hero.is-away::before, .hero.is-away .hero-glow { animation-play-state: paused !important; }
